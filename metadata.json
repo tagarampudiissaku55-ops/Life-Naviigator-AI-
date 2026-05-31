@@ -1,0 +1,10 @@
+{
+  "name": "Life Navigator AI",
+  "description": "A Voice-First Agentic AI personal life coordinator and executor powered by Google Gemini",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

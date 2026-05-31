@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Reusable primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    // Schema validation
+    function isValidMemory(data) {
+      return data.keys().hasAll(['content', 'category', 'importance', 'timestamp'])
+        && data.content is string && data.content.size() <= 2000
+        && data.category is string && (data.category == 'preference' || data.category == 'event' || data.category == 'person' || data.category == 'logistics' || data.category == 'other')
+        && data.importance is number && data.importance >= 1 && data.importance <= 5
+        && data.timestamp is string;
+    }
+
+    match /memories/{memoryId} {
+      // Allow general sandbox access to display memories
+      allow read, list: if true;
+      
+      // Strict schema enforcement
+      allow create: if isValidId(memoryId) && isValidMemory(request.resource.data);
+      allow update: if isValidId(memoryId) && isValidMemory(request.resource.data);
+      allow delete: if isValidId(memoryId);
+    }
+  }
+}

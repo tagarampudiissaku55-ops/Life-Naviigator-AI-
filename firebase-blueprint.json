@@ -1,0 +1,24 @@
+{
+  "entities": {
+    "VoiceMemory": {
+      "title": "Voice Memory",
+      "description": "Represents a long-term preference, fact, or log learned by AuraOS across sessions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the memory" },
+        "content": { "type": "string", "description": "The textual factual information of the memory" },
+        "category": { "type": "string", "description": "Category of the memory", "enum": ["preference", "event", "person", "logistics", "other"] },
+        "importance": { "type": "number", "description": "Priority score of the memory on a scale of 1-5" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "ISO timestamp of creation" },
+        "keywords": { "type": "array", "description": "Tags or keyword list for cosine similarity fallback search" }
+      },
+      "required": ["content", "category", "importance", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/memories/{memoryId}": {
+      "schema": "VoiceMemory",
+      "description": "A collection containing all learned or extracted user facts and preference memories."
+    }
+  }
+}
